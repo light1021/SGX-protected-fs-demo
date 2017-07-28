@@ -8,7 +8,8 @@ enclave
         public void ecall_enclaveString([out, size=len] char *s, size_t len);
         public SGX_FILE* ecall_file_open([in,string]const char* filename,[in,string]const char* mode);
         public size_t ecall_file_write([user_check]SGX_FILE* fp, [in] char data[100]);
-        public size_t ecall_file_read([user_check]SGX_FILE* fp,[in,out,string]char* readData);
+	public uint64_t ecall_file_get_file_size([user_check]SGX_FILE * fp);
+        public size_t ecall_file_read([user_check]SGX_FILE* fp,[in,out,count=size]char* readData, uint64_t size);
         public int32_t ecall_file_close([user_check]SGX_FILE* fp);
 
         

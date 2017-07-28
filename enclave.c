@@ -50,6 +50,14 @@ SGX_FILE* ecall_file_open(const char* filename, const char* mode)
 	return a;
 }
 
+uint64_t ecall_file_get_file_size(SGX_FILE * fp)
+{
+	uint64_t file_size = 0;
+	sgx_fseek(fp, 0, SEEK_END);
+	file_size = sgx_ftell(fp);
+	return file_size;
+}
+
 size_t ecall_file_write(SGX_FILE* fp, char data[100]) 
 {
 	size_t sizeofWrite;
@@ -61,24 +69,25 @@ size_t ecall_file_write(SGX_FILE* fp, char data[100])
 		char buffer[] = { 'x' , 'c' };
 		sizeofWrite += sgx_fwrite(buffer, sizeof(char), sizeof(buffer), fp);
 	}*/
-
 	return sizeofWrite;
 }
 
-size_t ecall_file_read(SGX_FILE* fp, char* readData) 
+size_t ecall_file_read(SGX_FILE* fp, char* readData, uint64_t size) 
 {
 	char *data;
 	uint64_t startN = 1;
 	sgx_fseek(fp, 0, SEEK_END);
 	uint64_t finalN = sgx_ftell(fp);
 	sgx_fseek(fp, 0, SEEK_SET);
-
+        printf("file size%d\n", finalN);
 	data = (char*)malloc(sizeof(char)*finalN);
 	memset(data, 0, sizeof(char)*finalN);
 
 	size_t sizeofRead = sgx_fread(data, startN, finalN, fp);
 	int len = strlen(data);
 	memcpy(readData, data, sizeofRead);
+	memset(readData+sizeofRead, '\0', 1);
+	printf("%s\n", readData);
 	return sizeofRead;
 }
 

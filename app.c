@@ -237,7 +237,7 @@ int SGX_CDECL main(int argc, char *argv[])
  
     sgx_status_t ret = SGX_ERROR_UNEXPECTED;
 
-    
+	uint64_t file_size = 0;    
 	SGX_FILE* fp;
 	const char* filename = "SGX_File_Protection_System.txt";
 	const char* mode = "w+";
@@ -255,9 +255,10 @@ int SGX_CDECL main(int argc, char *argv[])
 	printf("Size of Write=  %d\n", sizeOfWrite);
 
 	//Read from File
+	ret = ecall_file_get_file_size(eid, &file_size, fp);
 	size_t sizeOfRead = 0;
 	char data[100];
-	ret = ecall_file_read(eid, &sizeOfRead, fp, data);
+	ret = ecall_file_read(eid, &sizeOfRead, fp, data, file_size);
 	printf("Size of Read= %d\n", sizeOfRead);
 
 
